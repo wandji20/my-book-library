@@ -1,20 +1,21 @@
-const bookButton = document.querySelector('.book-btn');
-const bookForm = document.querySelector('.book-form');
-const title = document.getElementById('title');
-const author = document.getElementById('author');
-const pages = document.getElementById('pages');
-const readNodes = document.getElementsByName('read-status');
-let read;
-function getReadStatus(radio){
-  for(let i=0; i<radio.length; i++){
-    if (radio[i].checked){
-      read = radio[i].value
-    }
-  }
-}
-getReadStatus(readNodes)
+const form_submit = document.getElementById('form-submit');
+const book_form = document.querySelector('#book-form');
+const form_btn = document.querySelector('#form-btn');
+const title = document.querySelector('#title');
+const author = document.querySelector('#author');
+const pages = document.querySelector('#pages');
+const read_inputs = document.getElementsByName('read-status');
 
-let library = [];
+let mylibrary = [];
+
+// function serializeMyLibrary() {
+//   localStorage.mylibrary = JSON.stringify(mylibrary);
+// }
+
+// function deserializeMyLibrary() {
+//   const books = JSON.parse(localStorage.mylibrary);
+//   return books;
+// }
 
 function Book(title, author, pages, read){
   this.title = title;
@@ -23,25 +24,84 @@ function Book(title, author, pages, read){
   this.read = read;
 }
 
-
-function addBookToLibrary(book){
-
-}
-
 function displayForm(){
-  if (bookForm.style.display === ''){
-    bookForm.style.display = 'block';
+  if (book_form.style.display === ''){
+    book_form.style.display = 'block';
   }else{
-    bookForm.style.display = '';
+    book_form.style.display = '';
   }
 }
 
 
+function displayBooks(){
+  // deserialised_books = deserializeMyLibrary()
+  deserialised_books = JSON.parse(localStorage.mylibrary)
+  const table = document.getElementById('book-list');
 
+  for(let i=0; i<deserialised_books.length; i++){
+    const row = document.createElement('tr');
+    row.setAttribute('id', i);
+    row.innerHTML = `
+      <td>${deserialised_books[i].title}</td>
+      <td>${deserialised_books[i].author}</td>
+      <td>${deserialised_books[i].pages}</td>
+      <td>${deserialised_books[i].read}</td>
+      <td><button class='btn btn-danger'>Remove Book</button></td>
+      `;
+    table.appendChild(row);
+  }
+}
+    
+function createBook(){
+  const r1 = document.getElementById('read');
+  const r2 = document.getElementById('unread');
+  let read;
 
+  const getReadvlaue = () =>{
+    if (r1.checked == true){
+      read = r1.value;
+    }else if(r2.checked == true){
+      read = r2.value;
+    }
+    return read;
 
+  }
 
+  getReadvlaue();
 
+  // let mylibrary = deserializeMyLibrary();
+  mylibrary = JSON.parse(localStorage.mylibrary)
+  if(title.value === '' || author.value === '' || pages.value == '' || read == null ){
+    alert('please fill all fields');
+  }else{
+    console.log('allfields are filled')
+    let aBook = new Book(title.value, author.value, pages.value, read);
+    mylibrary.push(aBook);
+    localStorage.mylibrary = JSON.stringify(mylibrary);
 
+  }
+}
 
-bookButton.addEventListener('click', displayForm)
+function removeBook(id){
+  mylibrary = JSON.parse(localStorage.mylibrary);
+  mylibrary.splice(id, 1);
+  localStorage.mylibrary = JSON.stringify(mylibrary);
+  
+}
+document.querySelector('#book-list').addEventListener('click', (e) => {
+  let t_body = e.target.parentNode.parentNode.parentNode
+  let t_row = e.target.parentNode.parentNode
+  removeBook(t_row.id);
+  t_body.removeChild(t_row);
+});
+  
+
+form_submit.addEventListener('click', createBook);
+form_btn.addEventListener('click', displayForm);
+
+if (localStorage.mylibrary){
+  mylibrary = JSON.parse(localStorage.mylibrary);
+}else{
+  localStorage.mylibrary = JSON.stringify(mylibrary)
+}
+displayBooks();
