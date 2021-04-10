@@ -59,21 +59,10 @@ function displayBooks(){
 }
     
 function createBook(){
-  const r1 = document.getElementById('read');
-  const r2 = document.getElementById('unread');
-  let read;
+  const r1 = document.getElementById('read-status');
 
-  const getReadvlaue = () =>{
-    if (r1.checked == true){
-      read = r1.value;
-    }else if(r2.checked == true){
-      read = r2.value;
-    }
-    return read;
+  const read = r1.checked
 
-  }
-
-  getReadvlaue();
 
   let mylibrary = deserializeMyLibrary();
   // mylibrary = JSON.parse(localStorage.mylibrary)
