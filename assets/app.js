@@ -1,10 +1,9 @@
-const form_submit = document.getElementById('form-submit');
-const book_form = document.querySelector('#book-form');
-const form_btn = document.querySelector('#form-btn');
+const formSubmit = document.getElementById('form-submit');
+const bookForm = document.querySelector('#book-form');
+const formBtn = document.querySelector('#form-btn');
 const title = document.querySelector('#title');
 const author = document.querySelector('#author');
 const pages = document.querySelector('#pages');
-const read_inputs = document.getElementsByName('read-status');
 
 
 //  function serializeMyLibrary() {
@@ -13,10 +12,10 @@ const read_inputs = document.getElementsByName('read-status');
 // }
 
 function deserializeMyLibrary() {
-  let book = [];
+  let books = [];
 
-  if (localStorage.getItem('mylibrary')){
-    books = JSON.parse(localStorage.mylibrary); 
+  if (localStorage.getItem('mylibrary')) {
+    books = JSON.parse(localStorage.mylibrary);
   }
   return books;
 }
@@ -28,8 +27,8 @@ function deserializeMyLibrary() {
 //   this.read = read;
 // }
 
-class Book{
-  constructor(title, author, pages, read){
+class Book {
+  constructor(title, author, pages, read) {
     this.title = title;
     this.author = author;
     this.pages = pages;
@@ -38,95 +37,89 @@ class Book{
 }
 
 
-function displayForm(){
-  if (book_form.style.display === ''){
-    book_form.style.display = 'block';
-  }else{
-    book_form.style.display = '';
+function displayForm() {
+  if (bookForm.style.display === '') {
+    bookForm.style.display = 'block';
+  } else {
+    bookForm.style.display = '';
   }
 }
 
 
-function displayBooks(){
-  deserialised_books = deserializeMyLibrary()
-  /// deserialised_books = JSON.parse(localStorage.mylibrary)
+function displayBooks() {
+  const deserialisedBooks = deserializeMyLibrary();
+  // / deserialisedBooks = JSON.parse(localStorage.mylibrary)
   const table = document.getElementById('book-list');
-  for(let i=0; i<deserialised_books.length; i++){
-    // const read_text = deserialised_books[i].read == true ? 'Already Read' : 'To Read';
-    // const read_class = deserialised_books[i].read ? 'success' : 'danger';
-    const readValue = deserialised_books[i].read === true ? 'Already Read' : 'To Read';
+  for (let i = 0; i < deserialisedBooks.length; i += 1) {
+    // const read_text = deserialisedBooks[i].read == true ? 'Already Read' : 'To Read';
+    // const read_class = deserialisedBooks[i].read ? 'success' : 'danger';
+    const readValue = deserialisedBooks[i].read === true ? 'Already Read' : 'To Read';
     const row = document.createElement('tr');
     row.setAttribute('id', i);
     row.innerHTML = `
-      <td>${deserialised_books[i].title}</td>
-      <td>${deserialised_books[i].author}</td>
-      <td>${deserialised_books[i].pages}</td>
+      <td>${deserialisedBooks[i].title}</td>
+      <td>${deserialisedBooks[i].author}</td>
+      <td>${deserialisedBooks[i].pages}</td>
       <td><button class='btn btn-success read-status'>${readValue}</button></td>
       <td><button class='btn btn-danger remove'>Remove Book</button></td>
       `;
     table.appendChild(row);
   }
 }
-    
-function createBook(){
+
+function createBook() {
   const r1 = document.getElementById('read-status');
 
-  const read = r1.checked
+  const read = r1.checked;
 
 
-  let mylibrary = deserializeMyLibrary();
+  const mylibrary = deserializeMyLibrary();
   // mylibrary = JSON.parse(localStorage.mylibrary)
-  if(title.value === '' || author.value === '' || pages.value == '' || read == null ){
+  if (title.value === '' || author.value === '' || pages.value === '' || read === null) {
     alert('please fill all fields');
-  }else{
-    let aBook = new Book(title.value, author.value, pages.value, read);
+  } else {
+    const aBook = new Book(title.value, author.value, pages.value, read);
     mylibrary.push(aBook);
     localStorage.mylibrary = JSON.stringify(mylibrary);
-
   }
 }
 
-function removeBook(id){
-  mylibrary = deserializeMyLibrary();
+function removeBook(id) {
+  const mylibrary = deserializeMyLibrary();
   mylibrary.splice(id, 1);
   localStorage.mylibrary = JSON.stringify(mylibrary);
 }
 
-function changeReadStatus(id){
-  mylibrary = deserializeMyLibrary();
+function changeReadStatus(id) {
+  const mylibrary = deserializeMyLibrary();
   mylibrary[id].read = !(mylibrary[id].read);
   localStorage.mylibrary = JSON.stringify(mylibrary);
 }
 
 
 document.querySelector('#book-list').addEventListener('click', (e) => {
-  if (e.target.className.includes('read-status')){
-    let button = e.target
-    let buttonText = e.target.textContent
-    let t_body = e.target.parentNode.parentNode.parentNode
-    let t_row = e.target.parentNode.parentNode
-    changeReadStatus(t_row.id);
-    button.textContent = (buttonText == 'Already Read') ? 'To Read' : 'Already Read'
-  
+  if (e.target.className.includes('read-status')) {
+    const button = e.target;
+    const buttonText = e.target.textContent;
+    const tRow = e.target.parentNode.parentNode;
+    changeReadStatus(tRow.id);
+    button.textContent = (buttonText === 'Already Read') ? 'To Read' : 'Already Read';
   }
 });
-
 
 
 document.querySelector('#book-list').addEventListener('click', (e) => {
-  if (e.target.className.includes('remove')){
-    let t_body = e.target.parentNode.parentNode.parentNode
-    let t_row = e.target.parentNode.parentNode
-    removeBook(t_row.id);
-    t_body.removeChild(t_row);
+  if (e.target.className.includes('remove')) {
+    const tBody = e.target.parentNode.parentNode.parentNode;
+    const tRow = e.target.parentNode.parentNode;
+    removeBook(tRow.id);
+    tBody.removeChild(tRow);
   }
 });
 
 
-
-
-form_submit.addEventListener('click', createBook);
-form_btn.addEventListener('click', displayForm);
+formSubmit.addEventListener('click', createBook);
+formBtn.addEventListener('click', displayForm);
 
 // if (localStorage.mylibrary){
 //   mylibrary = JSON.parse(localStorage.mylibrary);
