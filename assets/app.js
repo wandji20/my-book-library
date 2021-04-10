@@ -5,12 +5,6 @@ const title = document.querySelector('#title');
 const author = document.querySelector('#author');
 const pages = document.querySelector('#pages');
 
-
-//  function serializeMyLibrary() {
-//   let mylibrary = [];
-//   localStorage.mylibrary = JSON.stringify(mylibrary);
-// }
-
 function deserializeMyLibrary() {
   let books = [];
 
@@ -19,13 +13,6 @@ function deserializeMyLibrary() {
   }
   return books;
 }
-
-// function Book(title, author, pages, read){
-//   this.title = title;
-//   this.author = author;
-//   this.pages = pages;
-//   this.read = read;
-// }
 
 class Book {
   constructor(title, author, pages, read) {
@@ -48,11 +35,8 @@ function displayForm() {
 
 function displayBooks() {
   const deserialisedBooks = deserializeMyLibrary();
-  // / deserialisedBooks = JSON.parse(localStorage.mylibrary)
   const table = document.getElementById('book-list');
   for (let i = 0; i < deserialisedBooks.length; i += 1) {
-    // const read_text = deserialisedBooks[i].read == true ? 'Already Read' : 'To Read';
-    // const read_class = deserialisedBooks[i].read ? 'success' : 'danger';
     const readValue = deserialisedBooks[i].read === true ? 'Already Read' : 'To Read';
     const row = document.createElement('tr');
     row.setAttribute('id', i);
@@ -74,7 +58,6 @@ function createBook() {
 
 
   const mylibrary = deserializeMyLibrary();
-  // mylibrary = JSON.parse(localStorage.mylibrary)
   if (title.value === '' || author.value === '' || pages.value === '' || read === null) {
     alert('please fill all fields');
   } else {
@@ -120,10 +103,4 @@ document.querySelector('#book-list').addEventListener('click', (e) => {
 
 formSubmit.addEventListener('click', createBook);
 formBtn.addEventListener('click', displayForm);
-
-// if (localStorage.mylibrary){
-//   mylibrary = JSON.parse(localStorage.mylibrary);
-// }else{
-//   localStorage.mylibrary = JSON.stringify(mylibrary)
-// }
 displayBooks();
