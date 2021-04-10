@@ -41,17 +41,17 @@ function displayBooks(){
   deserialised_books = deserializeMyLibrary()
   /// deserialised_books = JSON.parse(localStorage.mylibrary)
   const table = document.getElementById('book-list');
-  
   for(let i=0; i<deserialised_books.length; i++){
     // const read_text = deserialised_books[i].read == true ? 'Already Read' : 'To Read';
     // const read_class = deserialised_books[i].read ? 'success' : 'danger';
+    const readValue = deserialised_books[i].read === true ? 'Already Read' : 'To Read';
     const row = document.createElement('tr');
     row.setAttribute('id', i);
     row.innerHTML = `
       <td>${deserialised_books[i].title}</td>
       <td>${deserialised_books[i].author}</td>
       <td>${deserialised_books[i].pages}</td>
-      <td><button class='btn btn-success'>${deserialised_books[i].read}</button></td>
+      <td><button class='btn btn-success read-status'>${readValue}</button></td>
       <td><button class='btn btn-danger remove'>Remove Book</button></td>
       `;
     table.appendChild(row);
@@ -80,11 +80,30 @@ function removeBook(id){
   mylibrary = deserializeMyLibrary();
   mylibrary.splice(id, 1);
   localStorage.mylibrary = JSON.stringify(mylibrary);
-  
 }
 
+function changeReadStatus(id){
+  mylibrary = deserializeMyLibrary();
+  mylibrary[id].read = !(mylibrary[id].read);
+  localStorage.mylibrary = JSON.stringify(mylibrary);
+}
+
+
 document.querySelector('#book-list').addEventListener('click', (e) => {
-  console.log(e.target.className.includes('remove'))
+  if (e.target.className.includes('read-status')){
+    let button = e.target
+    let buttonText = e.target.textContent
+    let t_body = e.target.parentNode.parentNode.parentNode
+    let t_row = e.target.parentNode.parentNode
+    changeReadStatus(t_row.id);
+    button.textContent = (buttonText == 'Already Read') ? 'To Read' : 'Already Read'
+  
+  }
+});
+
+
+
+document.querySelector('#book-list').addEventListener('click', (e) => {
   if (e.target.className.includes('remove')){
     let t_body = e.target.parentNode.parentNode.parentNode
     let t_row = e.target.parentNode.parentNode
@@ -93,18 +112,15 @@ document.querySelector('#book-list').addEventListener('click', (e) => {
   }
 });
 
-// document.querySelector('.remove').addEventListener('click', remove)
-// function remove(){
-//   console.log(this)
-// }
+
 
 
 form_submit.addEventListener('click', createBook);
 form_btn.addEventListener('click', displayForm);
 
-if (localStorage.mylibrary){
-  mylibrary = JSON.parse(localStorage.mylibrary);
-}else{
-  localStorage.mylibrary = JSON.stringify(mylibrary)
-}
+// if (localStorage.mylibrary){
+//   mylibrary = JSON.parse(localStorage.mylibrary);
+// }else{
+//   localStorage.mylibrary = JSON.stringify(mylibrary)
+// }
 displayBooks();
